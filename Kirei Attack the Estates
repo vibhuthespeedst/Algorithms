@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+
+void dfs(ll node, ll par, vector<vector<ll>>&adj, vector<ll> &val, vector<ll> &prefMin, vector<ll> &prefMax){
+    if(par!=-1){
+        prefMax[node] = max(val[node],val[node]-prefMin[par]);
+        prefMin[node] = min(val[node],val[node]-prefMax[par]);
+    }
+    for(ll &child:adj[node]){
+        if(child==par) continue;
+        dfs(child,node,adj,val,prefMin,prefMax);
+    }
+}
+
+int main() {
+	// your code goes here
+	ll t;
+	cin>>t;
+	while(t--){
+	    ll n;
+	    cin>>n;
+	    vector<vector<ll>> adj(n+1);
+	    vector<ll> val(n+1);
+	    for(ll i=1;i<=n;i++){
+	        cin>>val[i];
+	    }
+	    for(ll i=1;i<n;i++){
+	        ll u,v;
+	        cin>>u>>v;
+	        adj[u].push_back(v);
+	        adj[v].push_back(u);
+	    }
+	    vector<ll> prefMax(n+1);
+        vector<ll> prefMin(n+1);
+
+        prefMin[1]=val[1];
+        prefMax[1]=val[1];
+
+	    dfs(1,-1,adj,val,prefMin,prefMax);
+	    for(ll i=1;i<=n;i++){
+	        cout<<prefMax[i]<<" ";
+	    }
+	    cout<<endl;
+	    
+	}
+
+}
