@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+void dfs(int par, int node, vector<vector<int>> &adj, vector<int>&parent){
+    parent[node] = par;
+    for(int &child:adj[node]){
+        if(par==child) continue;
+        dfs(node,child,adj,parent);
+    }
+}
+
+//We need Parent to track the grandchildren.
+
+int main() {
+	// your code goes here
+	int n;
+	cin>>n;
+	vector<vector<int>> adj(n+1);
+	for(int i=1;i<n;i++){
+	    int u,v;
+	    cin>>u>>v;
+	    adj[u].push_back(v);
+	    adj[v].push_back(u);
+	}
+	vector<int> parent(n+1);
+	dfs(0, 1, adj,parent);
+	vector<int> color(n+1);
+	color[1] = 1;
+	int count = 1;
+	queue<int> q;
+	for(int &child:adj[1]){
+	    count++;
+	    color[child] = count;
+	    q.push(child);
+	}
+	while(!q.empty()){
+	    int count = 1;
+	    int node = q.front();
+	    q.pop();
+	    for(int &child:adj[node]){
+	        if(child==parent[node]) continue;
+	        while(color[node]==count || color[parent[node]]==count){
+	            count++;
+	        }
+	        color[child]=count;
+	        q.push(child);
+	        count++;
+	    }
+	}
+	cout<<*max_element(color.begin(),color.end())<<endl;
+	for(int i=1;i<=n;i++){
+	    cout<<color[i]<<" ";
+	}
+	cout<<endl;
+	
+
+}
