@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+vector<int> res;
+
+int dfs(int node, int par, vector<vector<int>>&adj, vector<int> &color){
+
+    int ans = 0;
+    for(int &child:adj[node]){
+        if(par==child) continue;
+        ans += dfs(child,node,adj,color);
+    }
+    if(color[node] && ans==0){
+        res.push_back(node);
+        return 1;
+    }
+    return ans;
+    
+}
+
+int main() {
+	// your code goes here
+	int n;
+	cin>>n;
+	vector<vector<int>> adj(n+1);
+	vector<int> color(n+1,0);
+	for(int i=1;i<n;i++){
+	    int u,v,w;
+	    cin>>u>>v>>w;
+	    adj[u].push_back(v);
+	    adj[v].push_back(u);
+	    if(w==2){
+	        color[u]=1;
+	        color[v]=1;
+	    }
+	}
+	cout<<dfs(1,0,adj,color)<<endl;
+	for(int &i:res){
+	    cout<<i<<" ";
+	}
+	cout<<endl;
+	
+
+}
