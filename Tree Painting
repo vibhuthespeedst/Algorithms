@@ -1,0 +1,42 @@
+#include <bits/stdc++.h>
+using namespace std;
+ 
+#define ll long long
+ 
+vector<ll> ans;
+vector<ll> sizes;
+ 
+ll rec(ll node, ll par, vector<vector<ll>>& adj) {
+    ll val = 1;
+    for (ll &child : adj[node]) {
+        if (child == par) continue;
+        val += rec(child, node, adj); 
+    }
+    return sizes[node] = val;
+}
+ 
+void dfs(ll node, ll par, vector<vector<ll>>& adj, ll n) {
+    if(par != -1) ans[node] = ans[par] + (n - 2 * sizes[node]);       //Rerooting transition equation.
+    for(ll &child : adj[node]) {
+        if(child == par) continue;
+        dfs(child, node, adj, n);
+    }
+}
+ 
+int main() {
+    ll n;
+    cin >> n;
+    sizes.resize(n + 1);
+    ans.resize(n + 1);
+    vector<vector<ll>> adj(n + 1);
+    for (ll i = 1; i < n; i++) {
+        ll u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    rec(1, -1, adj);
+    ans[1] = accumulate(sizes.begin() + 1, sizes.end(), 0LL); // use 0LL for correct type
+    dfs(1, -1, adj, n);
+    cout << *max_element(ans.begin() + 1, ans.end());
+}
